@@ -10,7 +10,7 @@ export class Transaction extends Document {
   @Prop({ required: true, enum: ['income', 'expense'] })
   type: string;
 
-  @Prop({ required: true, min: 1 })
+  @Prop({ required: true, min: 0 })   // was min: 1
   amount: number;
 
   @Prop({ required: true, index: true })

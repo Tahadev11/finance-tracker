@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Delete, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller, Get, Post, Patch, Body, Delete, Param, Req, UseGuards,
+} from '@nestjs/common';
 import { type Request } from 'express';
 import { TransactionsService } from './transactions.service.js';
 import { CreateTransactionDto } from './dto/create-transaction.dto.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 
-// We define a custom type so TypeScript knows 'req.user' exists
 interface RequestWithUser extends Request {
   user: { userId: string; email: string };
 }
@@ -22,6 +23,16 @@ export class TransactionsController {
   @Get()
   findAll(@Req() req: RequestWithUser) {
     return this.transactionsService.findAll(req.user.userId);
+  }
+
+  // ✅ NEW: update
+  @Patch(':id')
+  update(
+    @Req() req: RequestWithUser,
+    @Param('id') id: string,
+    @Body() dto: Partial<CreateTransactionDto>,
+  ) {
+    return this.transactionsService.update(req.user.userId, id, dto);
   }
 
   @Delete(':id')
